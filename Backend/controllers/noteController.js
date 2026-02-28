@@ -2,18 +2,23 @@ const Note = require("../model/Note");
 
 // Add Note
 let add_note = async (req, res) => {
-    try {
-        let note = new Note({
-            title: req.body.title,
-            content: req.body.content
-        });
 
-        await note.save();
-        res.json({ "msg": "Note added successfully." });
+  try {
 
-    } catch (err) {
-        res.json({ "msg": "Error in adding note." });
-    }
+    let note = new Note({
+      title: req.body.title,
+      content: req.body.content,
+      userId: req.userId,
+    });
+
+    await note.save();
+
+    res.json({ msg: "Added" });
+
+  } catch {
+    res.json({ msg: "Error" });
+  }
+
 };
 
 // Get Single Note
@@ -34,18 +39,19 @@ let get_note = async (req, res) => {
 
 // Get All Notes
 let get_all_note = async (req, res) => {
-    try {
-        let data = await Note.find();
 
-        if (!data || data.length === 0) {
-            return res.json({ "msg": "No notes found." });
-        }
+  try {
 
-        res.json({ "data": data });
+    let data = await Note.find({
+      userId: req.userId,
+    });
 
-    } catch (err) {
-        res.json({ "msg": "Error in fetching notes." });
-    }
+    res.json({ data });
+
+  } catch {
+    res.json({ msg: "Error" });
+  }
+
 };
 
 // Update Note
